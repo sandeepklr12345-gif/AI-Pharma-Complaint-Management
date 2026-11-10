@@ -65,29 +65,49 @@ The application is organized as a frontend-backend system with AI-assisted proce
 
 ### Prerequisites
 
-The required software and dependencies depend on the frameworks and libraries used by the frontend and backend.
-
-Before running the project, review the dependency and configuration files available in the respective directories.
+- Python 3.11+
+- Node.js 20+
+- PostgreSQL (a local database, e.g. `complaints_db`)
+- A free [Groq API key](https://console.groq.com)
 
 ### Installation
 
-1. Clone the repository:
+```bash
+git clone https://github.com/sandeepklr12345-gif/AI-Pharma-Complaint-Management.git
+cd AI-Pharma-Complaint-Management
+```
 
-   ```bash
-   git clone https://github.com/sandeepklr12345-gif/AI-Pharma-Complaint-Management.git
-   ```
+**Backend** (http://localhost:8000, API docs at `/docs`)
 
-2. Navigate to the project directory:
+```bash
+cd backend
+python -m venv venv && source venv/bin/activate    # Windows: venv\Scriptsctivate
+pip install -r requirements.txt
+cp .env.example .env                                # then set GROQ_API_KEY and DATABASE_URL
+createdb complaints_db                              # tables are created on first run
+uvicorn app.main:app --reload --port 8000
+```
 
-   ```bash
-   cd AI-Pharma-Complaint-Management
-   ```
+**Frontend** (http://localhost:5173)
 
-3. Open the `frontend/` and `backend/` directories to review their setup instructions and dependencies.
+```bash
+cd frontend
+cp .env.example .env                                # VITE_API_URL=http://localhost:8000
+npm install
+npm run dev
+```
 
-4. Install the required dependencies and configure any necessary environment variables according to the project's configuration.
+### Tests and CI
 
-5. Start the frontend and backend using the commands appropriate for the frameworks used in each component.
+```bash
+cd backend
+pip install -r requirements-dev.txt
+pytest
+```
+
+The tests run without Groq, Postgres or the embedding model: the LLM, database and embedder are replaced by fakes.
+They cover JSON clean-up of model output, the completeness check, risk classification, duplicate detection thresholds
+and file upload handling. GitHub Actions runs the backend tests and a frontend build on every push and pull request.
 
 ## 🔍 Example Workflow
 
